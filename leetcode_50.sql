@@ -109,7 +109,7 @@ WHERE id in (
 );
 
 -- 14. Confirmation Rate
-WITH cte1 as (
+with cte1 as (
     SELECT s.user_id,
     SUM(
         CASE 
@@ -183,7 +183,7 @@ FROM Transactions
 GROUP BY 1, 2;
 
 -- 21. Immediate Food Delivery II
-WITH cte1 AS (
+with cte1 AS (
     SELECT delivery_id, customer_id, order_date, customer_pref_delivery_date,
     ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date) AS order_num
     FROM Delivery
@@ -337,7 +337,7 @@ WHERE product_id NOT IN (
 );
 
 -- 35. Last Person to Fit in the Bus
-WITH cte_1 AS (
+with cte_1 AS (
     SELECT person_name, 
     SUM(weight) OVER (ORDER BY turn) AS sum_loop
     FROM Queue
@@ -376,8 +376,8 @@ ORDER BY employee_id;
 -- 38. Exchange Seats
 SELECT id,
 CASE 
-	WHEN id%2 = 0 THEN (lag(student) over (order by id))
-	ELSE COALESCE(lead(student) over (order by id), student)
+  WHEN id%2 = 0 THEN (lag(student) over (order by id))
+  ELSE COALESCE(lead(student) over (order by id), student)
 END as "student"
 FROM Seat;
 
@@ -410,10 +410,10 @@ with cte_1 AS (
     GROUP BY 1
 ),
 cte_2 AS (
-	SELECT visited_on, 
-	SUM(sum_amount) OVER (ORDER BY visited_on, visited_on rows between 6 preceding and current row) AS amount,
-	ROUND(AVG(sum_amount) OVER (ORDER BY visited_on, visited_on rows between 6 preceding and current row)::DECIMAL, 2) AS average_amount
-	FROM cte_1
+    SELECT visited_on, 
+    SUM(sum_amount) OVER (ORDER BY visited_on, visited_on rows between 6 preceding and current row) AS amount,
+    ROUND(AVG(sum_amount) OVER (ORDER BY visited_on, visited_on rows between 6 preceding and current row)::DECIMAL, 2) AS average_amount
+    FROM cte_1
 )
 SELECT * FROM cte_2
 WHERE visited_on - INTERVAL '6 days' IN (SELECT visited_on FROM cte_1);
